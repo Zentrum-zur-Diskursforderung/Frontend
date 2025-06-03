@@ -1,29 +1,40 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import React from 'react';
+import { View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import Sidebar from './components/sidebar'; // ← relative path
+import MainContentBox from './components/mainContentBox';
+import Footer from './components/footer';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  if (!loaded) {
-    // Async font loading only occurs in development.
-    return null;
-  }
-
+export default function Layout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <View style={styles.root}>
+      <Sidebar />
+
+      <ScrollView contentContainerStyle={styles.scrollContent} style={styles.scrollArea}>
+      <View style={styles.contentWrapper}>
+          <MainContentBox />
+          <Footer />
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: '#E7F0F2',
+  },
+  scrollArea: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingVertical: 50,
+    alignItems: 'center', // ✅ zentriert den Inhalt horizontal
+  },
+  contentWrapper: {
+    width: '100%',
+    maxWidth: "80%",         // ✅ begrenzt die Breite, damit zentrieren sichtbar ist
+    paddingHorizontal: 20, // ✅ optionaler Innenabstand
+  },
+});
